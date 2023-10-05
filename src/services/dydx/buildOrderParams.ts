@@ -15,7 +15,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 
 	// set expiration datetime. must be more than 1 minute from the current datetime
 	const date = new Date();
-	date.setMonth(date.getMonth() + 1);
+	date.setMonth(date.getMonth() + 2);
 	const dateStr = date.toJSON();
 
 	const connector = await DYDXConnector.build();
