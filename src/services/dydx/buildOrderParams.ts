@@ -139,9 +139,10 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
     };
     if (trailingpercent !== null) {
         orderParams.trailingPercent = trailingpercent;
+        orderParams.triggerPrice = price3;
     }
     if (trailingpercent == null && orderType == OrderType.TAKE_PROFIT) {
-        orderParams.triggerPrice = price1;
+        orderParams.triggerPrice = price3;
     }
 
     console.log('orderParams for dydx', orderParams);
