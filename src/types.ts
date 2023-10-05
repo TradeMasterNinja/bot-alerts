@@ -24,19 +24,22 @@ export type AlertObject = {
 	reduceOnly?: boolean;
   };
 
-export type dydxOrderParams = {
-    market: Market;
-    side: OrderSide;
-    type: string ;
-    timeInForce?: TimeInForce.FOK | TimeInForce.IOC | null | TimeInForce.GTT;
-    postOnly: false;
-    size: string;
-    price: string;
-    limitFee: string;
-    expiration: string;
-	trailingPercent? : string | null ;
-	reduceOnly?: boolean;
-};
+export type dydxOrderParams {
+  market: Market;
+  side: OrderSide;
+  type: OrderType;
+  size: string;
+  price: string;
+  //clientId: string;
+  timeInForce?: TimeInForce.FOK | TimeInForce.IOC | null | TimeInForce.GTT;
+  postOnly: boolean;
+  limitFee: string;
+  expiration: string;
+  //cancelId?: string;
+  reduceOnly?: boolean;
+  triggerPrice?: string;
+  trailingPercent?: string;
+}
 
 export type perpOrderParams = {
 	tickerSymbol: string;
