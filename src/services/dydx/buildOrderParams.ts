@@ -56,16 +56,16 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
             ? OrderType.TRAILING_STOP
             : OrderType.MARKET;
 
-    const price1: string =
+    const price1 =
         orderType === OrderType.MARKET || orderType === OrderType.LIMIT || orderType === OrderType.TRAILING_STOP
-            ? Number(alertMessage.enterPrice).toFixed(getDecimalPointLength(latestPrice)).toString()
-            : latestPrice.toFixed(getDecimalPointLength(latestPrice)).toString();
+            ? Number(alertMessage.enterPrice).toFixed(getDecimalPointLength(latestPrice))
+            : latestPrice.toFixed(getDecimalPointLength(latestPrice));
 
     const price2 = parseFloat(price1);
     const tickSize = parseFloat(marketsData.markets[market].tickSize);
     const roundedPrice = Math.round(price2 / tickSize) * tickSize;
 
-    const price3 = roundedPrice.toFixed(getDecimalPointLength(tickSize)).toString();
+    const price3 = roundedPrice.toFixed(getDecimalPointLength(tickSize))
 
     const slippagePercentage = 0.05;
     const minPrice =
@@ -76,7 +76,8 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
             : price3;
 
     const decimal = getDecimalPointLength(tickSize);
-    const price4 = minPrice.toFixed(decimal);
+    const price4 = minPrice.toFixed(decimal).toString();
+
 
     const time1 =
         orderType === OrderType.LIMIT
