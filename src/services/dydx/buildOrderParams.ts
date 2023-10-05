@@ -19,14 +19,8 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	    ? new Date(currentDate.getTime() + 2 * 60 * 1000) // 2 minutes in milliseconds
 	    : new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
 	
-	const dateStr: string = futureDate.toISOString();
+	const dateStr: string = futureDate.toJSON();
 
-
-	const date = new Date();
-	date.setDay(date.getDay() + 7);
-	let dateStr = date.toJSON();
-
-	//
 	const connector = await DYDXConnector.build();
 
 	const market = Market[alertMessage.market as keyof typeof Market];
