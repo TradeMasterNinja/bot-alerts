@@ -41,7 +41,9 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
             ? alertMessage.size * 2
             : alertMessage.size;
 
-
+    const stepSize = parseFloat(marketsData.markets[market].stepSize);
+    const stepDecimal = getDecimalPointLength(stepSize);
+    const orderSizeStr: string = orderSize.toFixed(stepDecimal); // Convert orderSize to a string
 
     const orderType: OrderType =
         alertMessage.type === 'market'
@@ -58,10 +60,6 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
         orderType === OrderType.MARKET || orderType === OrderType.LIMIT || orderType === OrderType.TRAILING_STOP
             ? Number(alertMessage.enterPrice).toFixed(getDecimalPointLength(latestPrice)).toString()
             : latestPrice.toFixed(getDecimalPointLength(latestPrice)).toString();
-
-    const stepSize = parseFloat(marketsData.markets[market].stepSize);
-    const stepDecimal = getDecimalPointLength(stepSize);
-    const orderSizeStr = Number(orderSize).toFixed(stepDecimal);
 
     const price2 = parseFloat(price1);
     const tickSize = parseFloat(marketsData.markets[market].tickSize);
@@ -104,7 +102,10 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
     };
 
     if (trailingpercent !== null) {
-        orderParams.trailingPercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
+         // If orderSide is "sell," make trailingpercent negative
+        trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
+        // Convert trailingpercent to a string before assigning it to orderParams
+        orderParams.trailingPercent = trailingpercent.toString();
         orderParams.triggerPrice = price4;
     } else if (trailingpercent == null && orderType == OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4;
