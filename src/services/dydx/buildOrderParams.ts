@@ -14,6 +14,14 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	const [db, rootData] = getStrategiesDB();
 	
 	// set expiration datetime. must be more than 1 minute from current datetime
+	const currentDate: Date = new Date();
+	const futureDate: Date = alertMessage.type === 'market'
+	    ? new Date(currentDate.getTime() + 2 * 60 * 1000) // 2 minutes in milliseconds
+	    : new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+	
+	const dateStr: string = futureDate.toISOString();
+
+
 	const date = new Date();
 	date.setDay(date.getDay() + 7);
 	let dateStr = date.toJSON();
@@ -53,10 +61,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	let price1: string;
 	const trailingpercent = alertMessage.trailingPercent !== undefined ? alertMessage.trailingPercent : null;
 
-	if (alertMessage.type === 'market') {
-		// use lower expiration for market orders
-		date.setMinutes(date.getMinutes() + 2);
-		dateStr = date.toJSON();		
+	if (alertMessage.type === 'market') {	
 		orderType = OrderType.MARKET;
 		price1 = latestPrice.toFixed(getDecimalPointLength(latestPrice)).toString();
 	} else if (alertMessage.type === 'take profit') {
