@@ -105,11 +105,10 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
         // Convert trailingpercent to a string before assigning it to orderParams
         orderParams.trailingPercent = trailingpercent.toString();
-        const trailingAmount: number = OrderSide.SELL 
-            ? latestPrice * (-(alertMessage.trailingPercent / 100)) 
-            : latestPrice * ((alertMessage.trailingPercent) / 100);
+        
+        const trailingAmount: number = latestPrice * (trailingpercent/100);
         const limitprice: number = OrderSide.SELL 
-            ? (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice))
+            ? (latestPrice - trailingAmount).toFixed(getDecimalPointLength(latestPrice))
             : (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice));
         
         orderParams.price = limitprice.toString();
