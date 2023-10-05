@@ -46,7 +46,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     const stepDecimal = getDecimalPointLength(stepSize);
     const orderSizeStr: string = orderSize.toFixed(stepDecimal); // Convert orderSize to a string
 
-    const { orderType, price1 }: { orderType: OrderType, price1: number } =
+    const { orderType, price1 }: { orderType: OrderType, price1: string } =
         alertMessage.type === 'market'
             ? { orderType: OrderType.MARKET, price1: latestPrice.toFixed(getDecimalPointLength(latestPrice)) }
             : alertMessage.type === 'take profit'
@@ -56,7 +56,6 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
             : alertMessage.type === 'trailing stop'
             ? { orderType: OrderType.TRAILING_STOP, price1: latestPrice.toFixed(getDecimalPointLength(latestPrice)) }
             : { orderType: OrderType.MARKET, price1: latestPrice.toFixed(getDecimalPointLength(latestPrice)) };
-
 
     const price2 = parseFloat(price1);
     const tickSize = parseFloat(marketsData.markets[market].tickSize);
@@ -99,21 +98,21 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     };
 
     let trailingpercent: number | null = alertMessage.trailingPercent !== undefined ? parseFloat(alertMessage.trailingPercent) : null;
-    
+
     if (trailingpercent !== null) {
         // If orderSide is "sell," make trailingpercent negative
         trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
         // Convert trailingpercent to a string before assigning it to orderParams
         orderParams.trailingPercent = trailingpercent.toString();
-        
-        const trailingAmount: number = latestPrice * (trailingpercent/100);
-        const limitprice: number = OrderSide.SELL 
-            ? (latestPrice - trailingAmount).toFixed(getDecimalPointLength(latestPrice))
-            : (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice));
-        
-        orderParams.price = limitprice.toString();
-        orderParams.triggerPrice = trailingAmount.toString();
-        
+
+        const trailingAmount: number = latestPrice * (trailingpercent / 100);
+        const limitprice: string = orderSide === OrderSide.SELL
+            ? (latestPrice - trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString()
+            : (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString();
+
+        orderParams.price = limitprice;
+        orderParams.triggerPrice = limitprice;
+
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4;
     }
