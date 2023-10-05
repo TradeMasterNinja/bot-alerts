@@ -12,12 +12,13 @@ import { getDecimalPointLength, getStrategiesDB } from '../../helper';
 
 export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	const [db, rootData] = getStrategiesDB();
-
+	
 	// set expiration datetime. must be more than 1 minute from current datetime
 	const date = new Date();
-	date.setMinutes(date.getMinutes() + 2);
-	const dateStr = date.toJSON();
+	date.setDay(date.getDay() + 7);
+	let dateStr = date.toJSON();
 
+	//
 	const connector = await DYDXConnector.build();
 
 	const market = Market[alertMessage.market as keyof typeof Market];
@@ -53,6 +54,9 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	const trailingpercent = alertMessage.trailingPercent !== undefined ? alertMessage.trailingPercent : null;
 
 	if (alertMessage.type === 'market') {
+		// use lower expiration for market orders
+		date.setMinutes(date.getMinutes() + 2);
+		dateStr = date.toJSON();		
 		orderType = OrderType.MARKET;
 		price1 = latestPrice.toFixed(getDecimalPointLength(latestPrice)).toString();
 	} else if (alertMessage.type === 'take profit') {
