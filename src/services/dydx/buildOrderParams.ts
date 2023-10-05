@@ -96,7 +96,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         postOnly: false,
         size: orderSizeStr,
         price: price4,
-        limitFee: Number(config.get('Dydx.User.limitFee')), // Convert limitFee to a number
+        limitFee: config.get('Dydx.User.limitFee'),
         expiration: dateStr,
         type: orderType,
         reduceOnly: reduceonly,
@@ -108,7 +108,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
         // Convert trailingpercent to a string before assigning it to orderParams
         orderParams.trailingPercent = trailingpercent.toString();
-        orderParams.triggerPrice = price4;
+        orderParams.triggerPrice = price4; // TODO: maybe use latest price for trigger price instead?
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4;
     }
