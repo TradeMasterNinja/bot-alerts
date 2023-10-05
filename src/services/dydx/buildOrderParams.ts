@@ -102,22 +102,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         reduceOnly: reduceonly,
     };
 
-    const trailingpercent: number | null = alertMessage.trailingPercent !== undefined ? parseFloat(alertMessage.trailingPercent) : null;
-    if (trailingpercent !== null) {
-        // If orderSide is "sell," make trailingpercent negative
-        trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
-        // Convert trailingpercent to a string before assigning it to orderParams
-        orderParams.trailingPercent = trailingpercent.toString();
-        orderParams.triggerPrice = price4;
-    } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
-        orderParams.triggerPrice = price4;
-    }
-
-    console.log('orderParams for dydx', orderParams);
-    return orderParams;
-};
-
-
+    let trailingpercent: number | null = alertMessage.trailingPercent !== undefined ? parseFloat(alertMessage.trailingPercent) : null;
     if (trailingpercent !== null) {
         // If orderSide is "sell," make trailingpercent negative
         trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
