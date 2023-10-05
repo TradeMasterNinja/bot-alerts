@@ -31,7 +31,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 
     const latestPrice = parseFloat(marketsData.markets[market].oraclePrice);
     console.log('latestPrice', latestPrice);
-
+    
     const orderSize: number = 
         alertMessage.sizeByLeverage
             ? (Number((await connector.client.private.getAccount(process.env.ETH_ADDRESS)).account.equity) * Number(alertMessage.sizeByLeverage)) / latestPrice
@@ -44,7 +44,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
     const stepSize = parseFloat(marketsData.markets[market].stepSize);
     const stepDecimal = getDecimalPointLength(stepSize);
     const orderSizeStr: string = orderSize.toFixed(stepDecimal); // Convert orderSize to a string
-
+    
     const orderType: OrderType =
         alertMessage.type === 'market'
             ? OrderType.MARKET
