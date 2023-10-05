@@ -73,12 +73,11 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
             ? orderSide === OrderSide.BUY
                 ? roundedPrice * (1 + slippagePercentage)
                 : roundedPrice * (1 - slippagePercentage)
-            : price3;
+            : parseFloat(price3);
 
     const decimal = getDecimalPointLength(tickSize);
     const price4 = minPrice.toFixed(decimal).toString();
-
-
+    
     const time1 =
         orderType === OrderType.LIMIT
             ? TimeInForce.GTT
