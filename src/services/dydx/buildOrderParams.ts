@@ -76,7 +76,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
             : parseFloat(price3);
 
     const decimal = getDecimalPointLength(tickSize);
-    const price4 = minPrice.toFixed(decimal).toString();
+    const price4 = minPrice.toFixed(decimal)
 
     const time1 =
         orderType === OrderType.LIMIT
@@ -94,7 +94,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         timeInForce: time1,
         postOnly: false,
         size: orderSizeStr,
-        price: price4,
+        price: price4.toString(),
         limitFee: config.get('Dydx.User.limitFee'),
         expiration: dateStr,
         type: orderType,
@@ -105,16 +105,17 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     
     if (trailingpercent !== null) {
         orderParams.trailingPercent = (orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent).toString();
-        const trailingAmount: number = latestPrice * (trailingpercent / 100);
+        
+        const trailingAmount: number = parseFloat(price4) * (trailingpercent / 100);
         const limitprice: string = orderSide === OrderSide.SELL
-            ? (latestPrice - trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString()
-            : (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString();
+            ? (parseFloat(price4) - trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toFixed(decimal)
+            : (parseFloat(price4) + trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toFixed(decimal);
     
-        orderParams.price = limitprice;
-        orderParams.triggerPrice = limitprice;
+        orderParams.price = limitprice.toString();
+        orderParams.triggerPrice = limitprice.toString();
     
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
-        orderParams.triggerPrice = price4;
+        orderParams.triggerPrice = price4.toString();
     }
     
     console.log('orderParams for dydx', orderParams);
