@@ -11,7 +11,8 @@ import 'dotenv/config';
 import { getDecimalPointLength, getStrategiesDB } from '../../helper';
 
 export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<dydxOrderParams> => {
-    const [db, rootData]: [any, any] = getStrategiesDB(); // Adjust the types accordingly
+    const db = getStrategiesDB()[0];
+    const rootData = getStrategiesDB()[1];
 
     const currentDate: Date = new Date();
     const futureDate: Date =
@@ -23,16 +24,16 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
 
     const connector = await DYDXConnector.build();
 
-    const market: Market = Market[alertMessage.market as keyof typeof Market];
+    const market = Market[alertMessage.market as keyof typeof Market];
     const marketsData = await connector.client.public.getMarkets(market);
 
     const orderSide: OrderSide =
         alertMessage.order == 'buy' ? OrderSide.BUY : OrderSide.SELL;
 
-    const latestPrice: number = parseFloat(marketsData.markets[market].oraclePrice);
+    const latestPrice = parseFloat(marketsData.markets[market].oraclePrice);
     console.log('latestPrice', latestPrice);
-    
-    const orderSize: number = 
+
+    const orderSize: number =
         alertMessage.sizeByLeverage
             ? (Number((await connector.client.private.getAccount(process.env.ETH_ADDRESS)).account.equity) * Number(alertMessage.sizeByLeverage)) / latestPrice
             : alertMessage.sizeUsd
@@ -41,10 +42,10 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
             ? alertMessage.size * 2
             : alertMessage.size;
 
-    const stepSize: number = parseFloat(marketsData.markets[market].stepSize);
-    const stepDecimal: number = getDecimalPointLength(stepSize);
+    const stepSize = parseFloat(marketsData.markets[market].stepSize);
+    const stepDecimal = getDecimalPointLength(stepSize);
     const orderSizeStr: string = orderSize.toFixed(stepDecimal); // Convert orderSize to a string
-    
+
     const orderType: OrderType =
         alertMessage.type === 'market'
             ? OrderType.MARKET
@@ -56,29 +57,29 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
             ? OrderType.TRAILING_STOP
             : OrderType.MARKET;
 
-    const price1: string | number =
+    const price1 =
         orderType === OrderType.MARKET || orderType === OrderType.LIMIT || orderType === OrderType.TRAILING_STOP
             ? Number(alertMessage.enterPrice).toFixed(getDecimalPointLength(latestPrice))
             : latestPrice.toFixed(getDecimalPointLength(latestPrice));
 
-    const price2: number = parseFloat(price1);
-    const tickSize: number = parseFloat(marketsData.markets[market].tickSize);
-    const roundedPrice: number = Math.round(price2 / tickSize) * tickSize;
+    const price2 = parseFloat(price1);
+    const tickSize = parseFloat(marketsData.markets[market].tickSize);
+    const roundedPrice = Math.round(price2 / tickSize) * tickSize;
 
-    const price3: number = roundedPrice.toFixed(getDecimalPointLength(tickSize));
+    const price3 = roundedPrice.toFixed(getDecimalPointLength(tickSize));
 
-    const slippagePercentage: number = 0.05;
-    const minPrice: number =
+    const slippagePercentage = 0.05;
+    const minPrice =
         alertMessage.type === 'market'
             ? orderSide === OrderSide.BUY
                 ? roundedPrice * (1 + slippagePercentage)
                 : roundedPrice * (1 - slippagePercentage)
-            : price3;
+            : parseFloat(price3);
 
-    const decimal: number = getDecimalPointLength(tickSize);
-    const price4: string = minPrice.toFixed(decimal).toString();
-    
-    const time1: TimeInForce =
+    const decimal = getDecimalPointLength(tickSize);
+    const price4 = minPrice.toFixed(decimal).toString();
+
+    const time1 =
         orderType === OrderType.LIMIT
             ? TimeInForce.GTT
             : orderType === OrderType.MARKET
@@ -95,19 +96,21 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         postOnly: false,
         size: orderSizeStr,
         price: price4,
-        limitFee: config.get('Dydx.User.limitFee') as number, // Assuming this is a number, adjust accordingly
+        limitFee: Number(config.get('Dydx.User.limitFee')), // Convert limitFee to a number
         expiration: dateStr,
         type: orderType,
         reduceOnly: reduceonly,
     };
 
+    let trailingpercent: number | null = /* Assign a value to trailingpercent here */;
+
     if (trailingpercent !== null) {
-         // If orderSide is "sell," make trailingpercent negative
+        // If orderSide is "sell," make trailingpercent negative
         trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
         // Convert trailingpercent to a string before assigning it to orderParams
         orderParams.trailingPercent = trailingpercent.toString();
         orderParams.triggerPrice = price4;
-    } else if (trailingpercent == null && orderType == OrderType.TAKE_PROFIT) {
+    } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4;
     }
 
