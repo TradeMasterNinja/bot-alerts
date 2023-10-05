@@ -12,7 +12,11 @@ import { getDecimalPointLength, getStrategiesDB } from '../../helper';
 
 export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<dydxOrderParams> => {
     const db = getStrategiesDB()[0];
+    console.log('db:', db);
     const rootData = getStrategiesDB()[1];
+    // view strategies in console and find info to use for stops and tp orders
+    console.log('rootData:', rootData);
+
 
     const currentDate: Date = new Date();
     const futureDate: Date =
