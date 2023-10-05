@@ -101,8 +101,8 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	
 
     let time1 = null;
-	if (orderType == OrderType.TRAILING_STOP)
-		{ time1 = TimeInForce.IOC}
+	if (orderType == OrderType.LIMIT)
+		{ time1 = TimeInForce.GTT}
 	else if (orderType == OrderType.MARKET )
 		{ time1 = TimeInForce.FOK;}
 	else {
