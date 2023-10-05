@@ -138,7 +138,8 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
         reduceOnly: reduceonly,
     };
     if (trailingpercent !== null) {
-        orderParams.trailingPercent = trailingpercent;
+         // Check if orderSide is "sell" and convert trailingpercent to a negative value
+        orderParams.trailingPercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
         orderParams.triggerPrice = price3;
     }
     if (trailingpercent == null && orderType == OrderType.TAKE_PROFIT) {
