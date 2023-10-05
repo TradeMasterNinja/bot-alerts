@@ -100,15 +100,15 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     let trailingpercent: number | null = alertMessage.trailingPercent !== undefined ? parseFloat(alertMessage.trailingPercent) : null;
 
     if (trailingpercent !== null) {
-        // If orderSide is "sell," make trailingpercent negative
-        trailingpercent = orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent;
         // Convert trailingpercent to a string before assigning it to orderParams
-        orderParams.trailingPercent = trailingpercent.toString();
+        orderParams.trailingPercent = OrderSide.SELL 
+            ? -trailingpercent.toString() 
+            : trailingpercent.toString();
 
         const trailingAmount: number = latestPrice * (trailingpercent / 100);
         const limitprice: string = orderSide === OrderSide.SELL
-            ? (latestPrice - trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString()
-            : (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString();
+            ? (latestPrice + trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString()
+            : (latestPrice - trailingAmount).toFixed(getDecimalPointLength(latestPrice)).toString();
 
         orderParams.price = limitprice;
         orderParams.triggerPrice = limitprice;
