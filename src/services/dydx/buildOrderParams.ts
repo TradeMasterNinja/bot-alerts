@@ -13,9 +13,9 @@ import { getDecimalPointLength, getStrategiesDB } from '../../helper';
 export const dydxBuildOrderParams = async (alertMessage: AlertObject) => {
 	const [db, rootData] = getStrategiesDB();
 
-	// set expiration datetime. must be more than 1 minute from the current datetime
+	// set expiration datetime. must be more than 1 minute from current datetime
 	const date = new Date();
-	date.setMonth(date.getMonth() + 2);
+	date.setMinutes(date.getMinutes() + 2);
 	const dateStr = date.toJSON();
 
 	const connector = await DYDXConnector.build();
