@@ -106,7 +106,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     if (trailingpercent !== null) {
         orderParams.trailingPercent = (orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent).toString();
         
-        const trailingAmount: number = parseFloat(price4) * (trailingpercent / 100);
+        const trailingAmount: number = parseFloat(price4) * ((trailingpercent+1.5) / 100);
         // gets me above or below latest price
         const limitprice: string = orderSide === OrderSide.SELL
             ? (parseFloat(price4) + trailingAmount).toFixed(decimal)
@@ -123,7 +123,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         //orderParams.triggerPrice = trigger; // this is not be reconized
     
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
-        orderParams.triggerPrice = price4.toString();
+        orderParams.triggerPrice = price4;
     }
     
     console.log('orderParams for dydx', orderParams);
