@@ -108,7 +108,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         
         const trailingAmount: number = parseFloat(price4) * (trailingpercent / 100);
         // gets me above or below latest price
-        const limitprice: string = orderSide === OrderSide.SELL
+        const limitprice: number = orderSide === OrderSide.SELL
             ? (parseFloat(price4) + trailingAmount).toFixed(decimal)
             : (parseFloat(price4) - trailingAmount).toFixed(decimal);
 
