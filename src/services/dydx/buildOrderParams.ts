@@ -61,7 +61,17 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
             ? { orderType: OrderType.TRAILING_STOP, price1: latestPrice.toFixed(getDecimalPointLength(latestPrice)) }
             : { orderType: OrderType.MARKET, price1: latestPrice.toFixed(getDecimalPointLength(latestPrice)) };
 
-    const price2 = parseFloat(price1);
+    let price2: number;
+    // update price here for trailing stop calculation
+    if (alertMessage.type === 'trailing stop' && alertMessage.trailingPercent !== undefined)
+        const trailingAmount: number = parseFloat(price1) * (trailingpercent / 100);
+        price2 = orderSide === OrderSide.SELL
+            ? parseFloat(price1)-trailingAmount
+            : parseFloat(price1)+trailingAmount;
+    else
+        price2 = parseFloat(price1);
+ 
+    
     const tickSize = parseFloat(marketsData.markets[market].tickSize);
     const roundedPrice = Math.round(price2 / tickSize) * tickSize;
 
@@ -94,7 +104,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         timeInForce: time1,
         postOnly: false,
         size: orderSizeStr,
-        price: price4.toString(),
+        price: price4,
         limitFee: config.get('Dydx.User.limitFee'),
         expiration: dateStr,
         type: orderType,
@@ -102,25 +112,8 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     };
 
     let trailingpercent: number | null = alertMessage.trailingPercent !== undefined ? parseFloat(alertMessage.trailingPercent) : null;
-    
     if (trailingpercent !== null) {
         orderParams.trailingPercent = (orderSide === OrderSide.SELL ? -trailingpercent : trailingpercent).toString();
-        
-        const trailingAmount: number = parseFloat(price4) * ((trailingpercent+1.5) / 100);
-        // gets me above or below latest price
-        const limitprice: string = orderSide === OrderSide.SELL
-            ? (parseFloat(price4) + trailingAmount).toFixed(decimal)
-            : (parseFloat(price4) - trailingAmount).toFixed(decimal);
-
-        // trigger needs to be < limit and below latest price for sell 
-        // trigger needs to be > limit and above latest price for buy
-        // testing.... toFixed(decimal) makes number a string
-        const trigger: string = orderSide === OrderSide.SELL
-            ? (parseFloat(limitprice) - trailingAmount).toFixed(decimal)
-            : (parseFloat(limitprice) + trailingAmount).toFixed(decimal);
-
-        orderParams.price = trigger;
-        //orderParams.triggerPrice = trigger; // this is not be reconized
     
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4;
