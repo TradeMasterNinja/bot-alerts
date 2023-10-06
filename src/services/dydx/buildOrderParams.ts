@@ -108,12 +108,12 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         
         const trailingAmount: number = parseFloat(price4) * (trailingpercent / 100);
         const limitprice: string = orderSide === OrderSide.SELL
-            ? (parseFloat(price4) - trailingAmount + tickSize * 2).toFixed(decimal)
-            : (parseFloat(price4) + trailingAmount - tickSize * 2).toFixed(decimal);
+            ? (parseFloat(price4) + trailingAmount + tickSize * 2).toFixed(decimal)
+            : (parseFloat(price4) - trailingAmount - tickSize * 2).toFixed(decimal);
 
     
-        orderParams.price = limitprice.toString();
-        //orderParams.triggerPrice = price4.toString();
+        //orderParams.price = limitprice.toString();
+        orderParams.triggerPrice = limitprice.toString();
     
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4.toString();
