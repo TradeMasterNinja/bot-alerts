@@ -65,7 +65,8 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
     // update price here for trailing stop calculation
     const trailingpercent: number | null = alertMessage.trailingPercent !== undefined ? parseFloat(alertMessage.trailingPercent) : null;
     if (alertMessage.type === 'trailing stop' && trailingpercent !== null) {
-        const trailingAmount: number = parseFloat(price1) * (trailingpercent / 100);
+        const buffer: number = trailingpercent+0.5; // added 0.5% buffer to prevent trigger price error
+        const trailingAmount: number = parseFloat(price1) * (buffer / 100);
         price2 = orderSide === OrderSide.SELL
             ? parseFloat(price1) - trailingAmount
             : parseFloat(price1) + trailingAmount;
