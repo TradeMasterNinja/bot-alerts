@@ -108,20 +108,20 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
         
         const trailingAmount: number = parseFloat(price4) * (trailingpercent / 100);
         // gets me above or below latest price
-        const limitprice: number = orderSide === OrderSide.SELL
+        const limitprice: string = orderSide === OrderSide.SELL
             ? (parseFloat(price4) + trailingAmount).toFixed(decimal)
             : (parseFloat(price4) - trailingAmount).toFixed(decimal);
 
         // trigger needs to be < limit and below latest price for sell 
         // trigger needs to be > limit and above latest price for buy
-        orderParams.price = limitprice.toString();
-        // testing....
+        orderParams.price = limitprice;
+        // testing.... toFixed(decimal) makes number a string
         const trigger: string = orderSide === OrderSide.SELL
             ? (parseFloat(limitprice) - trailingAmount).toFixed(decimal)
             : (parseFloat(limitprice) + trailingAmount).toFixed(decimal);
 
         
-        orderParams.triggerPrice = trigger.toString();
+        orderParams.triggerPrice = trigger;
     
     } else if (trailingpercent === null && orderType === OrderType.TAKE_PROFIT) {
         orderParams.triggerPrice = price4.toString();
