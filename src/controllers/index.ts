@@ -84,7 +84,6 @@ router.post('/', async (req, res) => {
         }
       }
     }
-  }
 
     // Additional processing for each alert if needed
     // checkAfterPosition(alert);
