@@ -4,7 +4,7 @@ import DYDXConnector from './dydx/client';
 import { getStrategiesDB } from '../helper';
 
 
-validateAlert = async (
+export const validateAlert = async (
   alertMessage: AlertObject,
   account: any // Use any for dydxAccount
 ): Promise<boolean> => {
