@@ -97,8 +97,7 @@ export const dydxBuildOrderParams = async (alertMessage: AlertObject): Promise<d
             ? TimeInForce.FOK
             : TimeInForce.IOC;
 
-    const reduceonly: boolean =
-        orderType === OrderType.MARKET ? false : alertMessage.reduceOnly || false;
+    const reduceonly: boolean = alertMessage.reduceOnly || false;
 
     const orderParams: dydxOrderParams = {
         market: market,
