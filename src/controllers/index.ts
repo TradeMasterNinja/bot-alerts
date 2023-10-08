@@ -17,20 +17,27 @@ const router: Router = express.Router();
 router.get('/', async (req, res) => {
   console.log('Received GET request.');
 
-  const dydxAccount = await dydxGetAccount();
-  const perpAccount = await perpGetAccount();
+  const dydxAccountData = await dydxGetAccount();
+  const perpAccountData = await perpGetAccount();
 
-  if (!dydxAccount && !perpAccount) {
+  if (!dydxAccountData.success && !perpAccountData.success) {
     res.send('Error on getting account data');
   } else {
+    const dydxAccountMessage = dydxAccountData.success
+      ? 'dYdX Account Ready'
+      : 'dYdX Account Not Ready';
+
+    const perpAccountMessage = perpAccountData.success
+      ? 'Perpetual Protocol Account Ready'
+      : 'Perpetual Protocol Account Not Ready';
+
     const message =
-      'dYdX Account Ready: ' +
-      dydxAccount +
-      '\n  Perpetual Protocol Account Ready: ' +
-      perpAccount;
+      dydxAccountMessage + '\n' + perpAccountMessage;
+
     res.send(message);
   }
 });
+
 
 router.post('/', async (req, res) => {
   console.log('Received Tradingview strategy alert:', req.body);
