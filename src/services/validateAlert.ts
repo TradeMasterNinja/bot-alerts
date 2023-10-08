@@ -3,11 +3,14 @@ import { Market } from '@dydxprotocol/v3-client';
 import DYDXConnector from './dydx/client';
 import { getStrategiesDB } from '../helper';
 
-export const validateAlert = async (
-  alertMessage: AlertObject
+
+validateAlert = async (
+  alertMessage: AlertObject,
+  account: any // Use any for dydxAccount
 ): Promise<boolean> => {
   // Log the alert message at the beginning
   console.log('Alert message:', alertMessage);
+  console.log('account',account);
 
   // check correct alert JSON format
   if (!Object.keys(alertMessage).length) {
