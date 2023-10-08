@@ -41,19 +41,23 @@ class DYDXConnector {
 	}
 
 	static async build() {
-		if (!this.instance) {
-			const connector = new DYDXConnector();
-			if (!connector || !connector.client) return;
-			const account = await connector.client.private.getAccount(
-				process.env.ETH_ADDRESS
-			);
-
-			connector.positionID = account.account.positionId;
-			this.instance = connector;
+		  if (!this.instance) {
+		    const connector = new DYDXConnector();
+		    if (!connector || !connector.client) return { account: null, success: false };
+		    const account = await connector.client.private.getAccount(
+		      process.env.ETH_ADDRESS
+		    );
+		
+		    if (!account || !account.account || !account.account.positionId) {
+		      return { account: null, success: false };
+		    }
+		
+		    connector.positionID = account.account.positionId;
+		    this.instance = connector;
+		  }
+		
+		  return { account: this.instance.client, success: true };
 		}
-
-		return this.instance;
-	}
 }
 
 export default DYDXConnector;
