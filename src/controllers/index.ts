@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 
    // Iterate over each alert in the array
   for (const alert of alerts) {
-    const alertedAccount = alert.exchange === 'perpetual' ? perpAccount : dydxAccount;
+    const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount(); : await dydxGetAccount();;
     const validated = await validateAlert(alert,alertedAccount);
     if (!validated) {
       res.send('Error. Alert message is not valid');
