@@ -35,84 +35,50 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   console.log('Received Tradingview strategy alert:', req.body);
 
-  const alerts = req.body.alerts; // Assuming an array of alerts in the request body
+  const alerts = Array.isArray(req.body) ? req.body : [req.body]; // Always pass an array of alerts
 
-  if (alerts && Array.isArray(alerts) && alerts.length > 0) {
-    // Iterate over each alert in the array
-    for (const alert of alerts) {
-      const validated = await validateAlert(alert);
-      if (!validated) {
-        res.send('Error. Alert message is not valid');
-        return;
-      }
+  if (!alerts || alerts.length === 0) {
+    res.send('Error. No valid alerts found');
+    return;
+  }
 
-      let orderResult;
-      switch (alert.exchange) {
-        case 'perpetual': {
-          const orderParams = await perpBuildOrderParams(alert);
-          if (!orderParams) return;
-          orderResult = await perpCreateOrder(orderParams);
-          await perpExportOrder(
-            alert.strategy,
-            orderResult,
-            alert.price,
-            alert.market
-          );
-          break;
-        }
-        default: {
-          const orderParams = await dydxBuildOrderParams(alert);
-          if (!orderParams) return;
-          orderResult = await dydxCreateOrder(orderParams);
-          if (!orderResult) return;
-          await dydxExportOrder(
-            alert.strategy,
-            orderResult.order,
-            alert.price
-          );
-        }
-      }
-
-      // Additional processing for each alert if needed
-      // checkAfterPosition(alert);
-    }
-  } else {
-    // Original code to process a single alert
-    const validated = await validateAlert(req.body);
+  // Iterate over each alert in the array
+  for (const alert of alerts) {
+    const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
       return;
     }
 
     let orderResult;
-    switch (req.body.exchange) {
+    switch (alert.exchange) {
       case 'perpetual': {
-        const orderParams = await perpBuildOrderParams(req.body);
+        const orderParams = await perpBuildOrderParams(alert);
         if (!orderParams) return;
         orderResult = await perpCreateOrder(orderParams);
         await perpExportOrder(
-          req.body.strategy,
+          alert.strategy,
           orderResult,
-          req.body.price,
-          req.body.market
+          alert.price,
+          alert.market
         );
         break;
       }
       default: {
-        const orderParams = await dydxBuildOrderParams(req.body);
+        const orderParams = await dydxBuildOrderParams(alert);
         if (!orderParams) return;
         orderResult = await dydxCreateOrder(orderParams);
         if (!orderResult) return;
         await dydxExportOrder(
-          req.body.strategy,
+          alert.strategy,
           orderResult.order,
-          req.body.price
+          alert.price
         );
       }
     }
 
-    // Additional processing for the single alert if needed
-    // checkAfterPosition(req.body);
+    // Additional processing for each alert if needed
+    // checkAfterPosition(alert);
   }
 
   res.send('OK');
