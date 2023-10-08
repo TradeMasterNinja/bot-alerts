@@ -42,14 +42,14 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  // Iterate over each alert in the array
+   // Iterate over each alert in the array
   for (const alert of alerts) {
     const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
       return;
     }
-  
+
     let orderResult;
     switch (alert.exchange) {
       case 'perpetual': {
@@ -65,23 +65,15 @@ router.post('/', async (req, res) => {
         break;
       }
       default: {
-        // Check if dydxAccount has the market property under openPositions
-        if (dydxAccount.openPositions && dydxAccount.openPositions[alert.market]) {
-          // Log the open position
-          console.log(`Open position in ${alert.market}:`, dydxAccount.openPositions[alert.market]);
-  
-          const orderParams = await dydxBuildOrderParams(alert);
-          if (!orderParams) return;
-          orderResult = await dydxCreateOrder(orderParams);
-          if (!orderResult) return;
-          await dydxExportOrder(
-            alert.strategy,
-            orderResult.order,
-            alert.price
-          );
-        } else {
-          console.error(`No open position in ${alert.market}. Skipping alert.`);
-        }
+        const orderParams = await dydxBuildOrderParams(alert);
+        if (!orderParams) return;
+        orderResult = await dydxCreateOrder(orderParams);
+        if (!orderResult) return;
+        await dydxExportOrder(
+          alert.strategy,
+          orderResult.order,
+          alert.price
+        );
       }
     }
 
