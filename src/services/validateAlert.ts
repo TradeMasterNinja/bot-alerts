@@ -5,12 +5,10 @@ import { getStrategiesDB } from '../helper';
 
 
 export const validateAlert = async (
-  alertMessage: AlertObject,
-  account: any // Use any for dydxAccount
+  alertMessage: AlertObject
 ): Promise<boolean> => {
   // Log the alert message at the beginning
-  console.log('Alert message:', alertMessage);
-  console.log('account',account);
+  //console.log('Alert message:', alertMessage);
 
   // check correct alert JSON format
   if (!Object.keys(alertMessage).length) {
@@ -19,8 +17,8 @@ export const validateAlert = async (
   }
 
   // Log the passphrase
-  console.log('Passphrase:', alertMessage.passphrase);
-  console.log('env phrase',process.env.TRADINGVIEW_PASSPHRASE);
+  //console.log('Passphrase:', alertMessage.passphrase);
+  //console.log('env phrase',process.env.TRADINGVIEW_PASSPHRASE);
 
   // check passphrase
   if (process.env.TRADINGVIEW_PASSPHRASE && !alertMessage.passphrase) {
@@ -36,7 +34,7 @@ export const validateAlert = async (
   }
 
   // Log the exchange
-  console.log('Exchange:', alertMessage.exchange);
+  //console.log('Exchange:', alertMessage.exchange);
 
   // check exchange
   if (alertMessage.exchange) {
@@ -48,7 +46,7 @@ export const validateAlert = async (
   }
 
   // Log the strategy name
-  console.log('Strategy:', alertMessage.strategy);
+  //console.log('Strategy:', alertMessage.strategy);
 
   // check strategy name
   if (!alertMessage.strategy) {
@@ -57,7 +55,7 @@ export const validateAlert = async (
   }
 
   // Log the order side
-  console.log('Order Side:', alertMessage.order);
+  //console.log('Order Side:', alertMessage.order);
 
   // check orderSide
   if (alertMessage.order != 'buy' && alertMessage.order != 'sell') {
@@ -68,7 +66,7 @@ export const validateAlert = async (
   }
 
   // Log the position
-  console.log('Position:', alertMessage.position);
+  //console.log('Position:', alertMessage.position);
 
   //check position
   if (
@@ -81,7 +79,7 @@ export const validateAlert = async (
   }
 
   // Log the reverse
-  console.log('Reverse:', alertMessage.reverse);
+  //console.log('Reverse:', alertMessage.reverse);
 
   //check reverse
   if (typeof alertMessage.reverse != 'boolean') {
