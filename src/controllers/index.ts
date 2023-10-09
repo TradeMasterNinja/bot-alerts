@@ -52,8 +52,12 @@ router.post('/', async (req, res) => {
 
    // Iterate over each alert in the array
   for (const alert of alerts) {   
-    // Call the function to check if the database should be reset
-    await resetDatabase(alert) 
+      // Check if the flag is set to trigger the database reset
+      if (alert.restDB == true) {
+        await resetDatabase();
+        console.log('Database reset triggered.');
+      }
+    
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
     
