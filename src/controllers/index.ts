@@ -10,6 +10,7 @@ import {
   perpBuildOrderParams,
   perpGetAccount,
   perpExportOrder,
+  resetDB,
 } from '../services';
 
 const router: Router = express.Router();
@@ -50,11 +51,9 @@ router.post('/', async (req, res) => {
   }
 
    // Iterate over each alert in the array
-  for (const alert of alerts) {
-    if (alert.deleteDB) {
-      // Call the function to delete the database
-      await deleteAllData();
-    }
+  for (const alert of alerts) {   
+    // Call the function to check if the database should be reset
+    await resetDB(alert) 
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
     
