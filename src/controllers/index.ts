@@ -54,7 +54,14 @@ router.post('/', async (req, res) => {
     const pos = await checkAfterPosition(alert);
     console.log('checkAfterPosition:',pos);
     const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount() : await dydxGetAccount();
-    console.log('Alerted Account:',alertedAccount);
+    if (alertedAccount.account && alertedAccount.account.account && alertedAccount.account.account.account) {
+        console.log('Account with Data:', alertedAccount.account.account.account);
+        console.log('Open', alertedAccount.account.account.account.openPositions);
+    } else {
+      console.log('Account data is missing or undefined.');
+    }
+    
+    //console.log('Alerted Account:',alertedAccount);
     // Access openPositions
    //const openPositions = alertedAccount.account.account.openPositions;
      console.log('Positions',alertedAccount);
