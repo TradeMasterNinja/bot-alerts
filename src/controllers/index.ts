@@ -51,6 +51,10 @@ router.post('/', async (req, res) => {
 
    // Iterate over each alert in the array
   for (const alert of alerts) {
+    if (alert.deleteDB) {
+      // Call the function to delete the database
+      await deleteAllData();
+    }
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
     
