@@ -9,13 +9,13 @@ export const checkAfterPosition = async (
   if (!rootData[alertMessage.strategy] || !rootData[alertMessage.strategy].position) {
     return null;
   }
-
-  const storedPositionSize = rootData[alertMessage.strategy].position;
+  return rootData;
+  //const storedPositionSize = rootData[alertMessage.strategy].position;
 
   // Calculate the absolute value of the position size
-  const absPositionSize = Math.abs(storedPositionSize);
+  //const absPositionSize = Math.abs(storedPositionSize);
 
-  return absPositionSize;
+  //return absPositionSize;
 };
 
 
