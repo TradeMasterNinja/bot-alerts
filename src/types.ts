@@ -22,6 +22,7 @@ export type AlertObject = {
 	exchange: string;
 	sizeByLeverage?: number;
 	reduceOnly?: boolean;
+	resetDB?: boolean;
   };
 
 export type dydxOrderParams = {
