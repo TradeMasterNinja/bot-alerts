@@ -6,6 +6,10 @@ export const checkAfterPosition = async (
 ): Promise<number | null> => {
   const [db, rootData] = getStrategiesDB();
 
+  if (!rootData[alertMessage.strategy] || !rootData[alertMessage.strategy].position) {
+    return null;
+  }
+
   const storedPositionSize = rootData[alertMessage.strategy].position;
 
   // Calculate the absolute value of the position size
@@ -13,6 +17,7 @@ export const checkAfterPosition = async (
 
   return absPositionSize;
 };
+
 
 
 
