@@ -51,20 +51,9 @@ router.post('/', async (req, res) => {
 
    // Iterate over each alert in the array
   for (const alert of alerts) {
-    const pos = await checkAfterPosition(alert);
-    console.log('checkAfterPosition:',pos);
-    const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount() : await dydxGetAccount();
-    if (alertedAccount.account && alertedAccount.account.account && alertedAccount.account.account.account) {
-        console.log('Account with Data:', alertedAccount.account.account.account);
-        console.log('Open', alertedAccount.account.account.account.openPositions);
-    } else {
-      console.log('Account data is missing or undefined.');
-    }
-    
-    //console.log('Alerted Account:',alertedAccount);
-    // Access openPositions
-   //const openPositions = alertedAccount.account.account.openPositions;
-     console.log('Positions',alertedAccount);
+    const data = await checkAfterPosition(alert);
+    console.log('Position Data:',data);
+    //const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount() : await dydxGetAccount();  
     const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
