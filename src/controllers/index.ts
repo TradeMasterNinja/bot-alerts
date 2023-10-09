@@ -52,8 +52,23 @@ router.post('/', async (req, res) => {
    // Iterate over each alert in the array
   for (const alert of alerts) {
     const data = await checkAfterPosition(alert);
-    console.log('Position Data:',data);
-    //const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount() : await dydxGetAccount();  
+    console.log('Position Data:', data);
+    
+    if (alert.reduceOnly) {
+      if (data[alert.strategy] && data[alert.strategy][position] !== undefined) {
+        alert.size = Math.abs(data[alert.strategy][position]); 
+        // Check if sizeByLeverage and sizeUsd exist, and delete them if they do
+        if (alert.sizeByLeverage) {
+          delete alert.sizeByLeverage;
+        }
+        if (alert.sizeUsd) {
+          delete alert.sizeUsd;
+        }
+      } else {
+        console.error('Data for alert strategy or position is missing or undefined.');
+      }
+    }
+
     const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
