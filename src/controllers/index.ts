@@ -54,8 +54,8 @@ router.post('/', async (req, res) => {
     const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount() : await dydxGetAccount();
     console.log('Alerted Account:',alertedAccount);
     // Access openPositions
-    const openPositions = alertedAccount.account.account.openPositions;
-     console.log('Positions',openPositions);
+   //const openPositions = alertedAccount.account.account.openPositions;
+     console.log('Positions',alertedAccount);
     const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
