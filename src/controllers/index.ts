@@ -39,7 +39,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-
 router.post('/', async (req, res) => {
   console.log('Received Tradingview strategy alert:', req.body);
 
@@ -50,14 +49,14 @@ router.post('/', async (req, res) => {
     return;
   }
 
-   // Iterate over each alert in the array
-  for (const alert of alerts) {   
-      // Check if the flag resetDB is set to trigger the database reset
-      if (alert.resetDB == true) {
-        await resetDatabase();
-        console.log('Database reset triggered.');
-      }
-    
+  // Iterate over each alert in the array
+  for (const alert of alerts) {
+    // Check if the flag resetDB is set to trigger the database reset
+    if (alert.resetDB === true) {
+      await resetDatabase();
+      console.log('Database reset triggered.');
+    }
+
     const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
@@ -66,20 +65,20 @@ router.post('/', async (req, res) => {
 
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
-    
-    if (alert.reduceOnly and data !== null) {
+
+    if (alert.reduceOnly && data !== null) {
       if (data[alert.strategy] && data[alert.strategy]['position'] !== undefined) {
-          alert.size = Math.abs(data[alert.strategy]['position']); 
-          // Check if sizeByLeverage and sizeUsd exist, and delete them if they do
-          if (alert['sizeByLeverage']) {
-            delete alert['sizeByLeverage'];
-          }
-          if (alert['sizeUsd']) {
-            delete alert['sizeUsd'];
-          }
-        } else {
-          console.error('Data for alert strategy or position is missing or undefined.');
+        alert.size = Math.abs(data[alert.strategy]['position']);
+        // Check if sizeByLeverage and sizeUsd exist, and delete them if they do
+        if (alert['sizeByLeverage']) {
+          delete alert['sizeByLeverage'];
         }
+        if (alert['sizeUsd']) {
+          delete alert['sizeUsd'];
+        }
+      } else {
+        console.error('Data for alert strategy or position is missing or undefined.');
+      }
     }
 
     let orderResult;
