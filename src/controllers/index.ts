@@ -58,6 +58,12 @@ router.post('/', async (req, res) => {
         console.log('Database reset triggered.');
       }
     
+    const validated = await validateAlert(alert);
+    if (!validated) {
+      res.send('Error. Alert message is not valid');
+      return;
+    }
+
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
     
@@ -74,12 +80,6 @@ router.post('/', async (req, res) => {
         } else {
           console.error('Data for alert strategy or position is missing or undefined.');
         }
-    }
-
-    const validated = await validateAlert(alert);
-    if (!validated) {
-      res.send('Error. Alert message is not valid');
-      return;
     }
 
     let orderResult;
