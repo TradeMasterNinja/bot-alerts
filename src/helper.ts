@@ -22,6 +22,25 @@ export const getStrategiesDB = () => {
 	return [db, rootData];
 };
 
+
+export const deleteAllData = () => {
+  try {
+    const environment =
+      config.util.getEnv('NODE_ENV') === 'production' ? 'mainnet' : 'testnet';
+    const dbName = './data/strategies/' + environment + '/myStrategies';
+    
+    // Create an instance of the JSON database
+    const db = new JsonDB(new Config(dbName, true, true, '/'));
+
+    // Delete all data by setting the root node to an empty object
+    db.delete('/');
+    
+    console.log('All data deleted from the database.');
+  } catch (error) {
+    console.error('Error deleting data from the database:', error);
+  }
+};
+
 function bigNumber2Big(value: BigNumber): Big {
 	return new Big(value.toString());
 }
