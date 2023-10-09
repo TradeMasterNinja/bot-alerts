@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
     
-    if (alert.reduceOnly) {
+    if (alert.reduceOnly and data !== null) {
       if (data[alert.strategy] && data[alert.strategy]['position'] !== undefined) {
           alert.size = Math.abs(data[alert.strategy]['position']); 
           // Check if sizeByLeverage and sizeUsd exist, and delete them if they do
