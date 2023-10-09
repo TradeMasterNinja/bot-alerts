@@ -56,17 +56,22 @@ router.post('/', async (req, res) => {
       await resetDatabase();
       console.log('Database reset triggered.');
     }
-
+  
     const validated = await validateAlert(alert);
     if (!validated) {
       res.send('Error. Alert message is not valid');
       return;
     }
-
+  
     const data = await checkAfterPosition(alert);
     console.log('Position Data:', data);
-
-    if (alert.reduceOnly && data !== null) {
+  
+    if (alert.reduceOnly && (data == null || data === undefined)) {
+      console.log('Skipping reduce only order, no position exists');
+      continue; // Skip this iteration and move to the next alert
+    }
+  
+    if (alert.reduceOnly) {
       if (data[alert.strategy] && data[alert.strategy]['position'] !== undefined) {
         alert.size = Math.abs(data[alert.strategy]['position']);
         // Check if sizeByLeverage and sizeUsd exist, and delete them if they do
@@ -80,7 +85,7 @@ router.post('/', async (req, res) => {
         console.error('Data for alert strategy or position is missing or undefined.');
       }
     }
-
+  
     let orderResult;
     switch (alert.exchange) {
       case 'perpetual': {
@@ -107,7 +112,7 @@ router.post('/', async (req, res) => {
         );
       }
     }
-
+  
     // Additional processing for each alert if needed
     // checkAfterPosition(alert);
   }
