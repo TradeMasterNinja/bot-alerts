@@ -1,7 +1,7 @@
 import { AlertObject } from '../types';
 import { Market } from '@dydxprotocol/v3-client';
 import DYDXConnector from './dydx/client';
-import { getStrategiesDB } from '../helper';
+import { getStrategiesDB,  deleteAllData } from '../helper';
 
 
 export const validateAlert = async (
