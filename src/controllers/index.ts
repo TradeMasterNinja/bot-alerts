@@ -10,8 +10,9 @@ import {
   perpBuildOrderParams,
   perpGetAccount,
   perpExportOrder,
-  resetDatabase,
 } from '../services';
+import { resetDatabase } from '../services/resetDatabase';
+
 
 const router: Router = express.Router();
 
