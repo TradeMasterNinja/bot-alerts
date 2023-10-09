@@ -51,6 +51,8 @@ router.post('/', async (req, res) => {
 
    // Iterate over each alert in the array
   for (const alert of alerts) {
+    const pos = await checkAfterPosition(alert);
+    console.log('checkAfterPosition:',pos);
     const alertedAccount = alert.exchange === 'perpetual' ? await perpGetAccount() : await dydxGetAccount();
     console.log('Alerted Account:',alertedAccount);
     // Access openPositions
