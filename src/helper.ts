@@ -23,7 +23,7 @@ export const getStrategiesDB = () => {
 };
 
 
-export const deleteAllData = () => {
+export const resetDB = () => {
   try {
     const environment =
       config.util.getEnv('NODE_ENV') === 'production' ? 'mainnet' : 'testnet';
