@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
    // Iterate over each alert in the array
   for (const alert of alerts) {   
       // Check if the flag resetDB is set to trigger the database reset
-      if (alert.restDB == true) {
+      if (alert.resetDB == true) {
         await resetDatabase();
         console.log('Database reset triggered.');
       }
